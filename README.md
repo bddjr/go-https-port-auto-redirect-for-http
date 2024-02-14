@@ -41,6 +41,15 @@ Content-Type: text/html
 <!-- https://github.com/bddjr/go-https-port-auto-redirect-for-http -->
 <html><head><script>location.protocol='https:'</script></head><body></body></html>
 ```
+```html
+<html>
+    <head>
+        <script>location.protocol='https:'</script>
+    </head>
+    <body>
+    </body>
+</html>
+```
 
 
 ### Test
