@@ -58,7 +58,8 @@ Content-Type: text/html
 ```
 ```
 Start test server
-http://127.0.0.1:5678
+http://local.q8p.cc:5678
+http://192.168.3.18:5678
 ```
 
 
