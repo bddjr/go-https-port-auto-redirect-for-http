@@ -14,6 +14,7 @@ Related issues: <https://github.com/golang/go/issues/49310>
 ## Get Start
 Pre install nodejs.  
 Run as Administrator on Windows.  
+Not suitable for Linux.  
 
 ### ON
 ```
