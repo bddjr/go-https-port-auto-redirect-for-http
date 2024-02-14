@@ -14,7 +14,13 @@ Related issues: <https://github.com/golang/go/issues/49310>
 ## Get Start
 Pre install nodejs.  
 Run as Administrator on Windows.  
-Not suitable for Linux.  
+***Not suitable for Linux.***  
+
+```
+git clone https://github.com/bddjr/go-https-port-auto-redirect-for-http
+cd go-https-port-auto-redirect-for-http
+```
+
 
 ### ON
 ```
@@ -36,6 +42,7 @@ Content-Type: text/html
 <html><head><script>location.protocol='https:'</script></head><body></body></html>
 ```
 
+
 ### Test
 ```
 > go run test.go
@@ -44,6 +51,7 @@ Content-Type: text/html
 Start test server
 http://127.0.0.1:5678
 ```
+
 
 ### OFF
 ```
