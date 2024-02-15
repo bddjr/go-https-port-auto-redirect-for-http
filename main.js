@@ -3,15 +3,23 @@
 const os = require("os");
 const ostype = os.type();
 const fs = require("fs");
+const path = require("path");
 
 console.log(ostype);
 
 var goPath = "";
-if (ostype === "Windows_NT") {
-  goPath = "C:\\Program Files\\Go\\src\\net\\http\\server.go";
-} else {
-  throw "unknow system";
+switch (ostype) {
+  case "Windows_NT":
+    goPath = "C:\\Program Files\\Go";
+    break;
+  case "Linux":
+  case "Darwin":
+    goPath = "/usr/local/go";
+    break;
+  default:
+    throw "unknow system";
 }
+goPath = path.join(goPath, "src", "net", "http", "server.go");
 
 console.log(goPath);
 

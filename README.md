@@ -14,17 +14,20 @@ Related issues: <https://github.com/golang/go/issues/49310>
 ## Get Start
 Pre install nodejs.  
 Run as Administrator on Windows.  
-***Not suitable for Linux.***  
+Run as root on Linux.  
 
 ```
-git clone https://github.com/bddjr/go-https-port-auto-redirect-for-http
-cd go-https-port-auto-redirect-for-http
+> git clone https://github.com/bddjr/go-https-port-auto-redirect-for-http
+> cd go-https-port-auto-redirect-for-http
 ```
 
 
 ### ON
 ```
 > node main on
+Windows_NT
+C:\Program Files\Go\src\net\http\server.go
+Writing on
 ```
 ```go
 			// If the handshake failed due to the client not speaking
@@ -55,8 +58,6 @@ Content-Type: text/html
 ### Test
 ```
 > go run test.go
-```
-```
 Start test server
 http://local.q8p.cc:5678
 http://192.168.3.18:5678
@@ -66,6 +67,9 @@ http://192.168.3.18:5678
 ### OFF
 ```
 > node main off
+Windows_NT
+C:\Program Files\Go\src\net\http\server.go
+Writing off
 ```
 ```go
 			// If the handshake failed due to the client not speaking
