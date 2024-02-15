@@ -34,24 +34,14 @@ Writing on
 			// TLS, assume they're speaking plaintext HTTP and write a
 			// 400 response on the TLS conn's underlying net.Conn.
 			if re, ok := err.(tls.RecordHeaderError); ok && re.Conn != nil && tlsRecordHeaderLooksLikeHTTP(re.RecordHeader) {
-				io.WriteString(re.Conn, "HTTP/1.0 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<!-- Client sent an HTTP request to an HTTPS server. -->\n<!-- https://github.com/bddjr/go-https-port-auto-redirect-for-http -->\n<html><head><script>location.protocol='https:'</script></head><body></body></html>\n")
+				io.WriteString(re.Conn, "HTTP/1.0 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<!-- Client sent an HTTP request to an HTTPS server. -->\n<script> location.protocol = 'https:' </script>\n")
 ```
 ```html
 HTTP/1.0 400 Bad Request
 Content-Type: text/html
 
 <!-- Client sent an HTTP request to an HTTPS server. -->
-<!-- https://github.com/bddjr/go-https-port-auto-redirect-for-http -->
-<html><head><script>location.protocol='https:'</script></head><body></body></html>
-```
-```html
-<html>
-    <head>
-        <script>location.protocol='https:'</script>
-    </head>
-    <body>
-    </body>
-</html>
+<script> location.protocol = 'https:' </script>
 ```
 
 

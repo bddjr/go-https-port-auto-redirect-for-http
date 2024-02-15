@@ -25,19 +25,36 @@ console.log(goPath);
 
 const serverGo = fs.readFileSync(goPath).toString();
 var newServerGo = "";
+
 const onOffStr = {
   off: `"HTTP/1.0 400 Bad Request\\r\\n\\r\\nClient sent an HTTP request to an HTTPS server.\\n"`,
-  on: `"HTTP/1.0 400 Bad Request\\r\\nContent-Type: text/html\\r\\n\\r\\n<!-- Client sent an HTTP request to an HTTPS server. -->\\n<!-- https://github.com/bddjr/go-https-port-auto-redirect-for-http -->\\n<html><head><script>location.protocol='https:'</script></head><body></body></html>\\n"`,
+  on: `"HTTP/1.0 400 Bad Request\\r\\nContent-Type: text/html\\r\\n\\r\\n<!-- Client sent an HTTP request to an HTTPS server. -->\\n<script> location.protocol = 'https:' </script>\\n"`,
+  olds: [
+    `"HTTP/1.0 400 Bad Request\\r\\nContent-Type: text/html\\r\\n\\r\\n<!-- Client sent an HTTP request to an HTTPS server. -->\\n<!-- https://github.com/bddjr/go-https-port-auto-redirect-for-http -->\\n<html><head><script>location.protocol='https:'</script></head><body></body></html>\\n"`,
+  ],
 };
 
 var argv = process.argv[2]?.toLowerCase();
 
+/**
+ * @param {string} oldStr
+ * @param {string} newStr
+ */
+function serverGoReplace(oldStr, newStr) {
+  newServerGo = serverGo.replace(oldStr, newStr);
+  if (newServerGo !== serverGo) return;
+  for (const i of onOffStr.olds) {
+    newServerGo = serverGo.replace(i, newStr);
+    if (newServerGo !== serverGo) return;
+  }
+}
+
 switch (argv) {
   case "on":
-    newServerGo = serverGo.replace(onOffStr.off, onOffStr.on);
+    serverGoReplace(onOffStr.off, onOffStr.on);
     break;
   case "off":
-    newServerGo = serverGo.replace(onOffStr.on, onOffStr.off);
+    serverGoReplace(onOffStr.on, onOffStr.off);
     break;
   default:
     throw "unknow argv";
