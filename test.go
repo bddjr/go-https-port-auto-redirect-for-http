@@ -9,14 +9,17 @@ import (
 )
 
 func main() {
+	// print
 	fmt.Println("Start test server")
-	var addr = ":5678"
+	addr := ":5678"
 	fmt.Println("http://local.q8p.cc" + addr)
-	var internalIp, err = GetInternalIP()
+	internalIp, err := GetInternalIP()
 	if err == nil {
 		fmt.Println("http://" + internalIp + addr)
 	}
 	fmt.Println()
+
+	// start server
 	server := &http.Server{
 		Addr:    addr,
 		Handler: http.HandlerFunc(httpResponseHandle),
@@ -25,13 +28,25 @@ func main() {
 }
 
 func httpResponseHandle(w http.ResponseWriter, r *http.Request) {
+	header := w.Header()
 	if r.URL.Path == "/" {
-		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte("<html><head><meta name=\"robots\" content=\"noindex\"/></head><body><h1>Hello HTTPS!</h1></body></html>"))
+		w.WriteHeader(200)
+		header.Set("Content-Type", "text/html")
+		w.Write([]byte("" +
+			"<html><head> " +
+			"	<meta name=\"robots\" content=\"noindex\"/>" +
+			"	<style>" +
+			"		*{ color-scheme: light dark; }" +
+			"	</style>" +
+			"</head><body>" +
+			"	<h1>Hello HTTPS!</h1>" +
+			"</body></html>\n",
+		))
 		return
 	}
 	w.WriteHeader(404)
-	w.Write([]byte("404 Not Found"))
+	header.Set("Content-Type", "text/plain")
+	w.Write([]byte("404 Not Found\n"))
 }
 
 func GetInternalIP() (string, error) {
