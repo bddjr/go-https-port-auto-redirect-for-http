@@ -1,10 +1,12 @@
 package main
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -12,6 +14,7 @@ func main() {
 	// print
 	fmt.Println("Start test server")
 	addr := ":5678"
+	// If you access using localhost, ERR_CONNECTION_RESET may appear
 	fmt.Println("http://local.q8p.cc" + addr)
 	internalIp, err := GetInternalIP()
 	if err == nil {
@@ -19,10 +22,28 @@ func main() {
 	}
 	fmt.Println()
 
+	compileRegExp_httpHost := regexp.MustCompile(`Host: \S+`)
+	compileRegExp_httpPath := regexp.MustCompile(`/\S*`)
+	compileRegExp_httpVers := regexp.MustCompile(`HTTP/\S+`)
+
 	// start server
 	server := &http.Server{
 		Addr:    addr,
 		Handler: http.HandlerFunc(httpResponseHandle),
+		TLSConfig: &tls.Config{
+			// When accessing the HTTPS port using the HTTP protocol,
+			// the browser will automatically redirect to the HTTPS protocol.
+			LooksLikeHttpResponseHandler: func(RecondBytes []byte) string {
+				RecondStrings := string(RecondBytes)
+				Path := compileRegExp_httpPath.FindString(RecondStrings)
+				Vers := compileRegExp_httpVers.FindString(RecondStrings)
+				Host := compileRegExp_httpHost.FindString(RecondStrings)[len("Host: "):]
+				return Vers + " 307 Temporary Redirect\r\n" +
+					"Location: https://" + Host + Path + "\r\n" +
+					"\r\n" +
+					"Client sent an HTTP request to an HTTPS server.\n"
+			},
+		},
 	}
 	server.ListenAndServeTLS("localhost.crt", "localhost.key")
 }
@@ -51,14 +72,12 @@ func httpResponseHandle(w http.ResponseWriter, r *http.Request) {
 
 func GetInternalIP() (string, error) {
 	// https://www.cnblogs.com/ligaofeng/p/13633624.html
-	// 思路来自于Python版本的内网IP获取，其他版本不准确
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
 		return "", errors.New("internal IP fetch failed, detail:" + err.Error())
 	}
 	defer conn.Close()
 
-	// udp 面向无连接，所以这些东西只在你本地捣鼓
 	res := conn.LocalAddr().String()
 	res = strings.Split(res, ":")[0]
 	return res, nil
