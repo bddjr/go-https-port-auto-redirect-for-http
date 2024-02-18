@@ -23,7 +23,7 @@ func main() {
 	fmt.Println()
 
 	compiledRegExp_httpVers := regexp.MustCompile(`HTTP/\S+`)  // HTTP/1.1
-	compiledRegExp_httpHost := regexp.MustCompile(`Host: \S+`) // local.q8p.cc:5678
+	compiledRegExp_httpHost := regexp.MustCompile(`Host: \S+`) // Host: local.q8p.cc:5678
 	compiledRegExp_httpPath := regexp.MustCompile(`/\S*`)      // /index.html
 
 	// start server
