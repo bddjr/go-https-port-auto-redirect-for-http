@@ -22,9 +22,9 @@ func main() {
 	}
 	fmt.Println()
 
+	compiledRegExp_httpVers := regexp.MustCompile(`HTTP/\S+`)
 	compiledRegExp_httpHost := regexp.MustCompile(`Host: \S+`)
 	compiledRegExp_httpPath := regexp.MustCompile(`/\S*`)
-	compiledRegExp_httpVers := regexp.MustCompile(`HTTP/\S+`)
 
 	// start server
 	server := &http.Server{
