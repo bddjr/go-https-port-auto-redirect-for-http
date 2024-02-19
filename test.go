@@ -34,10 +34,15 @@ func main() {
 			// the browser will automatically redirect to the HTTPS protocol.
 			LooksLikeHttpResponseHandler: func(RecondBytes []byte) string {
 				RecondString := string(RecondBytes)
-				Host := compiledRegExp_httpHost.FindString(RecondString)[8:] // "local.q8p.cc:5678"
-				Path := compiledRegExp_httpPath.FindString(RecondString)     // "/index.html"
+				Host := compiledRegExp_httpHost.FindString(RecondString) // "\r\nHost: local.q8p.cc:5678"
+				if Host == "" {
+					return "HTTP/1.1 400 Bad Request\r\n" +
+						"\r\n" +
+						"Missing required Host header.\n"
+				}
+				Path := compiledRegExp_httpPath.FindString(RecondString) // "/index.html"
 				return "HTTP/1.1 307 Temporary Redirect\r\n" +
-					"Location: https://" + Host + Path + "\r\n" +
+					"Location: https://" + Host[8:] + Path + "\r\n" +
 					"Connection: close\r\n" +
 					"\r\n" +
 					"Client sent an HTTP request to an HTTPS server.\n"
