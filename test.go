@@ -38,6 +38,7 @@ func main() {
 				Path := compiledRegExp_httpPath.FindString(RecondString)     // "/index.html"
 				return "HTTP/1.1 307 Temporary Redirect\r\n" +
 					"Location: https://" + Host + Path + "\r\n" +
+					"Connection: close\r\n" +
 					"\r\n" +
 					"Client sent an HTTP request to an HTTPS server.\n"
 			},
