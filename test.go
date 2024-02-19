@@ -22,9 +22,8 @@ func main() {
 	}
 	fmt.Println()
 
-	compiledRegExp_httpVers := regexp.MustCompile(`HTTP/\S+`)  // HTTP/1.1
-	compiledRegExp_httpHost := regexp.MustCompile(`Host: \S+`) // Host: local.q8p.cc:5678
-	compiledRegExp_httpPath := regexp.MustCompile(`/\S*`)      // /index.html
+	compiledRegExp_httpHost := regexp.MustCompile(`\r\nHost: \S+`) // "\r\nHost: local.q8p.cc:5678"
+	compiledRegExp_httpPath := regexp.MustCompile(`/\S*`)          // "/index.html"
 
 	// start server
 	server := &http.Server{
@@ -35,10 +34,9 @@ func main() {
 			// the browser will automatically redirect to the HTTPS protocol.
 			LooksLikeHttpResponseHandler: func(RecondBytes []byte) string {
 				RecondString := string(RecondBytes)
-				Vers := compiledRegExp_httpVers.FindString(RecondString)                 // HTTP/1.1
-				Host := compiledRegExp_httpHost.FindString(RecondString)[len("Host: "):] // local.q8p.cc:5678
-				Path := compiledRegExp_httpPath.FindString(RecondString)                 // /index.html
-				return Vers + " 307 Temporary Redirect\r\n" +
+				Host := compiledRegExp_httpHost.FindString(RecondString)[8:] // "local.q8p.cc:5678"
+				Path := compiledRegExp_httpPath.FindString(RecondString)     // "/index.html"
+				return "HTTP/1.1 307 Temporary Redirect\r\n" +
 					"Location: https://" + Host + Path + "\r\n" +
 					"\r\n" +
 					"Client sent an HTTP request to an HTTPS server.\n"
