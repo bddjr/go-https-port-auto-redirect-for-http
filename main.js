@@ -37,13 +37,21 @@ const onOffStr = {
       "Client sent an HTTP request to an HTTPS server.\n"
   ),
   on: JSON.stringify(
-    "HTTP/1.0 400 Bad Request\r\n" +
+    "HTTP/1.1 400 Bad Request\r\n" +
       "Content-Type: text/html\r\n" +
+      "Connection: close\r\n"+
       "\r\n" +
       "<!-- Client sent an HTTP request to an HTTPS server. -->\n" +
       "<script> location.protocol = 'https:' </script>\n"
   ),
   old_versions: [
+    JSON.stringify(
+      "HTTP/1.0 400 Bad Request\r\n" +
+        "Content-Type: text/html\r\n" +
+        "\r\n" +
+        "<!-- Client sent an HTTP request to an HTTPS server. -->\n" +
+        "<script> location.protocol = 'https:' </script>\n"
+    ),
     JSON.stringify(
       "HTTP/1.0 400 Bad Request\r\n" +
         "Content-Type: text/html\r\n" +
