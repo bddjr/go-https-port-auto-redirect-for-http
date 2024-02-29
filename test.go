@@ -36,7 +36,7 @@ func main() {
 			// HttpOnHttpsPortErrorHandler: func(conn net.Conn, recondBytes []byte, badRequestResponse string) {
 			// 	fmt.Println("HttpOnHttpsPortErrorHandler")
 			// 	// Read Header
-			// 	req, err := http.ReadRequestForHttpOnHttpsPortErrorHandler(conn, recondBytes)
+			// 	req, _, err := http.ReadRequestForHttpOnHttpsPortErrorHandler(conn, recondBytes)
 			// 	if err != nil {
 			// 		io.WriteString(conn, badRequestResponse)
 			// 		return
