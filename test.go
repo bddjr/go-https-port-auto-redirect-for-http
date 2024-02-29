@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"regexp"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -24,32 +24,29 @@ func main() {
 	}
 	fmt.Println()
 
-	compiledRegExp_httpHost := regexp.MustCompile(`\r\nHost: \S+`) // "\r\nHost: local.q8p.cc:5678"
-	compiledRegExp_httpPath := regexp.MustCompile(`/\S*`)          // "/index.html"
-
 	// start server
 	server := &http.Server{
-		Addr:    addr,
-		Handler: http.HandlerFunc(httpResponseHandle),
+		Addr:              addr,
+		Handler:           http.HandlerFunc(httpResponseHandle),
+		ReadHeaderTimeout: 10 * time.Second,
 		TLSConfig: &tls.Config{
 			// When accessing the HTTPS port using the HTTP protocol,
 			// the browser will automatically redirect to the HTTPS protocol.
-			LooksLikeHttpResponseHandler: func(RecondBytes []byte) string {
-				RecondString := string(RecondBytes)
-				Host := compiledRegExp_httpHost.FindString(RecondString) // "\r\nHost: local.q8p.cc:5678"
-				if Host == "" {
-					return "HTTP/1.1 400 Bad Request\r\n" +
-						"\r\n" +
-						"Missing required Host header.\n"
-				}
-				Host = Host[8:]                                          // "local.q8p.cc:5678"
-				Path := compiledRegExp_httpPath.FindString(RecondString) // "/index.html"
-				return "HTTP/1.1 307 Temporary Redirect\r\n" +
-					"Location: https://" + Host + Path + "\r\n" +
-					"Connection: close\r\n" +
-					"\r\n" +
-					"Client sent an HTTP request to an HTTPS server.\n"
-			},
+			HttpOnHttpsPortErrorRedirect: true,
+			// HttpOnHttpsPortErrorHandler: func(conn net.Conn, recondBytes []byte, badRequestResponse string) {
+			// 	fmt.Println("HttpOnHttpsPortErrorHandler")
+			// 	// Read Header
+			// 	req, err := http.ReadRequestForHttpOnHttpsPortErrorHandler(conn, recondBytes)
+			// 	if err != nil {
+			// 		io.WriteString(conn, badRequestResponse)
+			// 		return
+			// 	}
+			// 	// Send Redirect
+			// 	io.WriteString(conn, fmt.Sprintf(
+			// 		"HTTP/1.1 307 Temporary Redirect\r\nLocation: https://%s%s\r\nConnection: close\r\n\r\nClient sent an HTTP request to an HTTPS server.\n",
+			// 		req.Host, req.URL.Path,
+			// 	))
+			// },
 		},
 	}
 	server.ListenAndServeTLS("localhost.crt", "localhost.key")
